@@ -1,37 +1,38 @@
-import { type User, type InsertUser } from "@shared/schema";
+import { type FavoriteLocation, type InsertFavoriteLocation } from "@shared/schema";
 import { randomUUID } from "crypto";
 
-// modify the interface with any CRUD methods
-// you might need
-
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  getFavorites(): Promise<FavoriteLocation[]>;
+  addFavorite(location: InsertFavoriteLocation): Promise<FavoriteLocation>;
+  removeFavorite(id: string): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<string, User>;
+  private favorites: Map<string, FavoriteLocation>;
 
   constructor() {
-    this.users = new Map();
+    this.favorites = new Map();
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
-  }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
+  async getFavorites(): Promise<FavoriteLocation[]> {
+    return Array.from(this.favorites.values()).sort(
+      (a, b) => b.addedAt - a.addedAt
     );
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
+  async addFavorite(insertLocation: InsertFavoriteLocation): Promise<FavoriteLocation> {
     const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+    const location: FavoriteLocation = { 
+      ...insertLocation, 
+      id,
+      addedAt: Date.now()
+    };
+    this.favorites.set(id, location);
+    return location;
+  }
+
+  async removeFavorite(id: string): Promise<void> {
+    this.favorites.delete(id);
   }
 }
 
