@@ -1,19 +1,7 @@
-import { type WeatherData } from "@shared/schema";
 import { Card } from "@/components/ui/card";
 import { Thermometer, Droplets, Wind, Gauge, Eye } from "lucide-react";
 
-interface WeatherDetailsProps {
-  weather: WeatherData;
-}
-
-interface MetricCardProps {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  testId?: string;
-}
-
-function MetricCard({ icon, label, value, testId }: MetricCardProps) {
+function MetricCard({ icon, label, value, testId }) {
   return (
     <Card className="rounded-2xl p-6 hover-elevate">
       <div className="flex flex-col items-center text-center space-y-3">
@@ -31,7 +19,7 @@ function MetricCard({ icon, label, value, testId }: MetricCardProps) {
   );
 }
 
-export function WeatherDetails({ weather }: WeatherDetailsProps) {
+export function WeatherDetails({ weather }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 animate-in fade-in duration-300">
       <MetricCard

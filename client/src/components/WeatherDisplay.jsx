@@ -1,11 +1,6 @@
-import { type WeatherData } from "@shared/schema";
 import { Card } from "@/components/ui/card";
 
-interface WeatherDisplayProps {
-  weather: WeatherData;
-}
-
-export function WeatherDisplay({ weather }: WeatherDisplayProps) {
+export function WeatherDisplay({ weather }) {
   const iconUrl = `https://openweathermap.org/img/wn/${weather.icon}@4x.png`;
 
   return (

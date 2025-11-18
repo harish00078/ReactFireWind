@@ -1,8 +1,7 @@
-import type { Express } from "express";
-import { createServer, type Server } from "http";
+import { createServer } from "http";
 import { storage } from "./storage";
 
-export async function registerRoutes(app: Express): Promise<Server> {
+export async function registerRoutes(app) {
   // Weather API endpoint
   app.get("/api/weather/:city", async (req, res) => {
     try {

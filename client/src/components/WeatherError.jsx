@@ -2,12 +2,7 @@ import { AlertCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-interface WeatherErrorProps {
-  message: string;
-  onRetry?: () => void;
-}
-
-export function WeatherError({ message, onRetry }: WeatherErrorProps) {
+export function WeatherError({ message, onRetry }) {
   return (
     <Card className="rounded-2xl p-6 md:p-8 animate-in fade-in duration-300">
       <div className="flex flex-col items-center text-center space-y-4">

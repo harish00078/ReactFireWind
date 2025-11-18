@@ -25,7 +25,3 @@ export const insertFavoriteLocationSchema = favoriteLocationSchema.omit({
   id: true,
   addedAt: true,
 });
-
-export type WeatherData = z.infer<typeof weatherDataSchema>;
-export type FavoriteLocation = z.infer<typeof favoriteLocationSchema>;
-export type InsertFavoriteLocation = z.infer<typeof insertFavoriteLocationSchema>;

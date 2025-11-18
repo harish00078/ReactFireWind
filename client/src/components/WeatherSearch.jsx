@@ -1,17 +1,12 @@
-import { useState, FormEvent } from "react";
+import { useState } from "react";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-interface WeatherSearchProps {
-  onSearch: (city: string) => void;
-  isLoading: boolean;
-}
-
-export function WeatherSearch({ onSearch, isLoading }: WeatherSearchProps) {
+export function WeatherSearch({ onSearch, isLoading }) {
   const [city, setCity] = useState("");
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (city.trim()) {
       onSearch(city.trim());

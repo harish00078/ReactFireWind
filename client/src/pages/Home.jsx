@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { type WeatherData } from "@shared/schema";
 import { WeatherSearch } from "@/components/WeatherSearch";
 import { WeatherDisplay } from "@/components/WeatherDisplay";
 import { WeatherDetails } from "@/components/WeatherDetails";
@@ -10,9 +9,9 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { Cloud } from "lucide-react";
 
 export default function Home() {
-  const [searchCity, setSearchCity] = useState<string>("");
+  const [searchCity, setSearchCity] = useState("");
 
-  const { data: weather, isLoading, error, refetch } = useQuery<WeatherData>({
+  const { data: weather, isLoading, error, refetch } = useQuery({
     queryKey: ["/api/weather", searchCity],
     queryFn: async () => {
       const response = await fetch(`/api/weather/${encodeURIComponent(searchCity)}`);
@@ -25,7 +24,7 @@ export default function Home() {
     enabled: !!searchCity,
   });
 
-  const handleSearch = (city: string) => {
+  const handleSearch = (city) => {
     setSearchCity(city);
   };
 
