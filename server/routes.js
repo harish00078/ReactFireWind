@@ -1,5 +1,5 @@
 import { createServer } from "http";
-import { storage } from "./storage";
+import { storage } from "./storage.js";
 
 export async function registerRoutes(app) {
   // Weather API endpoint

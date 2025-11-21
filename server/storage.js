@@ -1,30 +1,28 @@
-import { randomUUID } from "crypto";
+import { db } from './firebase';
 
-export class MemStorage {
+export class FirestoreStorage {
   constructor() {
-    this.favorites = new Map();
+    this.favoritesCollection = db.collection('favorites');
   }
 
   async getFavorites() {
-    return Array.from(this.favorites.values()).sort(
-      (a, b) => b.addedAt - a.addedAt
-    );
+    const snapshot = await this.favoritesCollection.orderBy('addedAt', 'desc').get();
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   }
 
   async addFavorite(insertLocation) {
-    const id = randomUUID();
-    const location = { 
-      ...insertLocation, 
-      id,
+    const newDocRef = this.favoritesCollection.doc();
+    const location = {
+      ...insertLocation,
       addedAt: Date.now()
     };
-    this.favorites.set(id, location);
-    return location;
+    await newDocRef.set(location);
+    return { id: newDocRef.id, ...location };
   }
 
   async removeFavorite(id) {
-    this.favorites.delete(id);
+    await this.favoritesCollection.doc(id).delete();
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new FirestoreStorage();
