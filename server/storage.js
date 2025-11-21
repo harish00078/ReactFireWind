@@ -1,28 +1,65 @@
-import { db } from './firebase';
+import mongoose from 'mongoose';
 
-export class FirestoreStorage {
-  constructor() {
-    this.favoritesCollection = db.collection('favorites');
-  }
+const favoriteSchema = new mongoose.Schema({
+  city: { type: String, required: true },
+  country: { type: String, required: true },
+  addedAt: { type: Date, default: Date.now }
+});
 
+const Favorite = mongoose.model('Favorite', favoriteSchema);
+
+export class MongoStorage {
   async getFavorites() {
-    const snapshot = await this.favoritesCollection.orderBy('addedAt', 'desc').get();
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const favorites = await Favorite.find().sort({ addedAt: -1 });
+    return favorites.map(fav => ({
+      id: fav._id.toString(),
+      city: fav.city,
+      country: fav.country,
+      addedAt: fav.addedAt
+    }));
   }
 
   async addFavorite(insertLocation) {
-    const newDocRef = this.favoritesCollection.doc();
-    const location = {
-      ...insertLocation,
-      addedAt: Date.now()
+    const favorite = new Favorite(insertLocation);
+    await favorite.save();
+    return {
+      id: favorite._id.toString(),
+      city: favorite.city,
+      country: favorite.country,
+      addedAt: favorite.addedAt
     };
-    await newDocRef.set(location);
-    return { id: newDocRef.id, ...location };
   }
 
   async removeFavorite(id) {
-    await this.favoritesCollection.doc(id).delete();
+    await Favorite.findByIdAndDelete(id);
   }
 }
 
-export const storage = new FirestoreStorage();
+export class MemStorage {
+  constructor() {
+    this.favorites = new Map();
+    this.currentId = 1;
+  }
+
+  async getFavorites() {
+    return Array.from(this.favorites.values()).sort((a, b) => b.addedAt - a.addedAt);
+  }
+
+  async addFavorite(insertLocation) {
+    const id = String(this.currentId++);
+    const favorite = {
+      id,
+      ...insertLocation,
+      addedAt: new Date()
+    };
+    this.favorites.set(id, favorite);
+    return favorite;
+  }
+
+  async removeFavorite(id) {
+    this.favorites.delete(id);
+  }
+}
+
+export const storage = new MemStorage();
+// export const storage = new MongoStorage();

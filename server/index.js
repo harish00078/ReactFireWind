@@ -1,6 +1,7 @@
 import express from "express";
 import { registerRoutes } from "./routes.js";
 import { setupVite, serveStatic, log } from "./vite.js";
+import { connectDB } from "./db.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -47,6 +48,7 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  await connectDB();
   const server = await registerRoutes(app);
 
   app.use((err, _req, res, _next) => {
